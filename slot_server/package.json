@@ -1,0 +1,21 @@
+{
+	"name": "slot_server",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"start": "nodemon src/server"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"devDependencies": {
+		"nodemon": "^3.1.7"
+	},
+	"dependencies": {
+		"dotenv": "^16.4.5",
+		"ethers": "^6.13.4",
+		"express": "^4.21.1",
+		"telegraf": "^4.16.3"
+	}
+}
