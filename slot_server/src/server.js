@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { Telegraf, Markup } = require("telegraf");
 const bot = new Telegraf(process.env.BOT_TOKEN);
+const mongoose = require("mongoose");
 
 // action imports
 const { create_wallet } = require("./actions");
@@ -8,8 +9,14 @@ const { create_wallet } = require("./actions");
 // web3 utils
 const { importWallet } = require("./utils/web3Utils");
 
+//middleware imports
+const { isNewUser } = require("./middlewares");
+
 //all the states;
 let privateKeyNeeded;
+
+// connect Database
+mongoose.connect(process.env.DB_URI);
 
 bot.start(async (ctx) => {
 	await ctx.reply(`Welcome to Slot Oasis, ${ctx.from.first_name}`);
@@ -41,9 +48,13 @@ bot.action("import", (ctx) => {
 	privateKeyNeeded = true;
 });
 
-bot.action("buy", (ctx) => {
-	ctx.reply("BUYING ALL WHAT YOU'RE SELLING!...");
+bot.action("manage", (ctx) => {
+	ctx.reply("oooo... managing...");
 });
+
+// bot.action("manage", isNewUser, (ctx) => {
+// 	ctx.reply("BUYING ALL WHAT YOU'RE SELLING!...");
+// });
 
 bot.action("create", create_wallet);
 
@@ -60,10 +71,14 @@ bot.on("text", async (ctx) => {
 	}
 });
 
-bot.launch((err) => {
-	if (err) return console.log("error!");
+mongoose.connection.on("connected", (err) => {
+	if (err) return console.error("error from db connection ", err);
 
-	console.log("Bot luanched!");
+	bot.launch((err) => {
+		if (err) return console.log("error from bot launch", err);
+
+		console.log("Bot luanched!");
+	});
 });
 
 // Enable graceful stop

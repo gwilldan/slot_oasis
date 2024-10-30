@@ -1,5 +1,5 @@
+require("dotenv").config();
 const { ethers, JsonRpcProvider, Wallet } = require("ethers");
-const { import_wallet } = require("../actions");
 const provider = new JsonRpcProvider(process.env.RPC_URL);
 
 const createNewWallet = async () => {
@@ -15,14 +15,11 @@ const createNewWallet = async () => {
 const importWallet = (pkey) => {
 	if (!pkey) return;
 	try {
-		console.log(pkey);
-		const wallet = new Wallet(pkey, provider);
-		console.log(wallet);
-
-		// return wallet;
+		const wallet = new Wallet(pkey);
+		return wallet;
 	} catch (error) {
 		console.error("import wallet errror --- ", error);
-		return undefined;
+		return;
 	}
 };
 
