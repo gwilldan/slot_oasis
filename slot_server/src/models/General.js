@@ -1,6 +1,3 @@
-// const { Mongoose, Schema } = require("mongoose");
-// const mongoose = new Mongoose();
-
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 

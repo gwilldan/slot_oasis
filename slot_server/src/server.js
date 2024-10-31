@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { Telegraf, Markup } = require("telegraf");
+const { Telegraf, Markup, session, Scenes } = require("telegraf");
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const mongoose = require("mongoose");
 
@@ -11,24 +11,25 @@ const { importWallet } = require("./utils/web3Utils");
 
 //middleware imports
 const { isNewUser } = require("./middlewares");
+const { BaseScene } = require("telegraf/scenes");
 
-//all the states;
-let privateKeyNeeded;
+// scenes imports
+const importScene = require("./scenes/importScene");
 
 // connect Database
 mongoose.connect(process.env.DB_URI);
 
-bot.start(async (ctx) => {
+bot.start(isNewUser, async (ctx) => {
 	await ctx.reply(`Welcome to Slot Oasis, ${ctx.from.first_name}`);
 	await ctx.reply(
-		"To play, you need to create a wallet, would you like to create a new wallet or import an old wallet?"
+		" 🔔 To play, you need to create a wallet, would you like to create a new wallet or import an old wallet?"
 	);
 	await ctx.reply(
 		"Wallet Options:",
 		Markup.inlineKeyboard([
 			[
-				Markup.button.callback("CREATE WALLET", "create"),
-				Markup.button.callback("IMPORT WALLET", "import"),
+				Markup.button.callback(" + CREATE WALLET", "create"),
+				Markup.button.callback(" ♲ IMPORT WALLET", "import"),
 			],
 
 			[
@@ -39,36 +40,29 @@ bot.start(async (ctx) => {
 	);
 });
 
+const stage = new Scenes.Stage([importScene]);
+bot.use(session());
+bot.use(stage.middleware());
+
+bot.action("import", (ctx) => ctx.scene.enter("import_scene"));
+
 bot.command("remove", (ctx) => {
 	ctx.reply("Keyboard removed", Markup.removeKeyboard());
 });
 
-bot.action("import", (ctx) => {
-	ctx.reply("To import your wallet, reply with your private key");
-	privateKeyNeeded = true;
+bot.action("manage", isNewUser, (ctx) => {
+	ctx.reply("BUYING ALL WHAT YOU'RE SELLING!...");
 });
-
-bot.action("manage", (ctx) => {
-	ctx.reply("oooo... managing...");
-});
-
-// bot.action("manage", isNewUser, (ctx) => {
-// 	ctx.reply("BUYING ALL WHAT YOU'RE SELLING!...");
-// });
 
 bot.action("create", create_wallet);
 
-bot.on("text", async (ctx) => {
-	if (privateKeyNeeded) {
-		const privateKey = ctx.text;
-		const wallet = importWallet(privateKey);
+bot.action("close", (ctx) => {
+	ctx.editMessageText("Closed! Click on Menu or /start for our menu options.");
+	ctx.scene.leave();
+});
 
-		if (!wallet) {
-			ctx.reply("Invalid Private Key. Confirm and retry ...");
-			return;
-		}
-		ctx.reply(`Wallet Imported successfully. \n\n${wallet.address}`);
-	}
+bot.on("text", async (ctx) => {
+	console.log(ctx.message.text);
 });
 
 mongoose.connection.on("connected", (err) => {

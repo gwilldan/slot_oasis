@@ -1,13 +1,10 @@
 const UserDB = require("../models/User");
 
 const findUser = async (userId) => {
-	console.log("finding user... ");
 	try {
-		const user = await UserDB.find();
-
+		const user = await UserDB.findOne({ userId });
 		if (user) {
-			// return user;
-			console.log(user);
+			return user;
 		} else {
 			return null;
 		}
@@ -36,8 +33,6 @@ const updateUser = async (userId, field, value) => {
 		return null;
 	}
 };
-
-findUser("698806254");
 
 module.exports = {
 	findUser,

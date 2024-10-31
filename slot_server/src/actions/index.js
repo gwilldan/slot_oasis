@@ -22,6 +22,7 @@ const create_wallet = async (ctx) => {
 			luck: 0,
 			refLink: refLink,
 			userId: ctx.from.id,
+			address: newWallet.address,
 			username: ctx.from.username,
 		});
 
@@ -30,7 +31,6 @@ const create_wallet = async (ctx) => {
 		
 		\nYOUR REFERRAL LINK: \nhttps://t.me/SlotOasisBot?start=${refLink} `
 		);
-		console.log(data);
 	} catch (error) {
 		console.error("create_wallet error ----", error.message);
 	}
