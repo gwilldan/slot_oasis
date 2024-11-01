@@ -1,7 +1,6 @@
 const { BaseScene } = require("telegraf/scenes");
 const { findUser } = require("../utils/dbUtils");
 const { Wallet } = require("ethers");
-const { error } = require("console");
 const UserDB = require("../models/User");
 const { Markup } = require("telegraf");
 const { encryptKey, generateRef } = require("../utils/helpers");
@@ -29,7 +28,7 @@ importScene.on("text", async (ctx) => {
 			const refLink = generateRef();
 			console.log(refLink, enc);
 
-			const data = await UserDB.create({
+			await UserDB.create({
 				enc: enc,
 				FirstName: ctx.from.first_name,
 				luck: 0,
@@ -51,7 +50,9 @@ importScene.on("text", async (ctx) => {
 			console.log(error.shortMessage);
 			ctx.reply(
 				"⚠️ Invalid private key. Input a valid private key ... ",
-				Markup.inlineKeyboard([[Markup.button.callback("❌ close", "close")]])
+				Markup.inlineKeyboard([
+					[Markup.button.callback("\u2003 ❌ cancel \u2003", "cancel")],
+				])
 			);
 		} else {
 			console.log(error.message);

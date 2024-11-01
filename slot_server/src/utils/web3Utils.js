@@ -12,18 +12,6 @@ const createNewWallet = async () => {
 	}
 };
 
-const importWallet = (pkey) => {
-	if (!pkey) return;
-	try {
-		const wallet = new Wallet(pkey);
-		return wallet;
-	} catch (error) {
-		console.error("import wallet errror --- ", error);
-		return;
-	}
-};
-
 module.exports = {
 	createNewWallet,
-	importWallet,
 };
