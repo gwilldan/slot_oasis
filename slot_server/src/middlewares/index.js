@@ -10,11 +10,45 @@ const isNewUser = async (ctx, next) => {
 	} else {
 		ctx.session = user;
 		console.log(ctx.session);
-		const messages = [
-			ctx.reply(`Welcome Back, ${user.FirstName}`),
-			ctx.reply("Hit a new milestone today on Slot Oasis ... "),
-		];
-		await Promise.all(messages);
+		// const messages = [
+		// 	ctx.reply(`Welcome Back, ${user.FirstName}`),
+		// 	// ctx.reply(
+		// 	// 	"Hit a new milestone today on Slot Oasis ... ",
+		// 	// 	Markup.inlineKeyboard([
+		// 	// 		[
+		// 	// 			Markup.button.url(
+		// 	// 				"\u2003 🕹️ Play Slot Oasis \u2003 ",
+		// 	// 				"https://slot-oasis.vercel.app/"
+		// 	// 			),
+		// 	// 		],
+		// 	// 	])
+		// 	// ),
+
+		// 	ctx.sendPhoto("../../public/logo.png", {
+		// 		caption: "Hit a new milestone today on Slot Oasis...",
+		// 		reply_markup: Markup.inlineKeyboard([
+		// 			[
+		// 				Markup.button.url(
+		// 					"\u2003 🕹️ Play Slot Oasis \u2003 ",
+		// 					"https://slot-oasis.vercel.app/"
+		// 				),
+		// 			],
+		// 		]),
+		// 	}),
+		// ];
+		// await Promise.all(messages);
+
+		ctx.sendPhoto("../../public/logo.png", {
+			caption: "Hit a new milestone today on Slot Oasis...",
+			reply_markup: Markup.inlineKeyboard([
+				[
+					Markup.button.url(
+						"\u2003 🕹️ Play Slot Oasis \u2003 ",
+						"https://slot-oasis.vercel.app/"
+					),
+				],
+			]),
+		});
 	}
 };
 
