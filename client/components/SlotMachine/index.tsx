@@ -27,7 +27,7 @@ export default function SlotMachine() {
 				</button>
 			</div>
 
-			<div className="relative bg-gradient-to-b from-zinc-800 to-zinc-900 p-8 rounded-xl shadow-2xl border border-zinc-700">
+			<div className="relative bg-gradient-to-b from-zinc-800 to-zinc-900 p-3 max-w-[350px] rounded-xl shadow-2xl border border-zinc-700">
 				<ReelDisplay
 					reels={reels}
 					spinning={spinning}

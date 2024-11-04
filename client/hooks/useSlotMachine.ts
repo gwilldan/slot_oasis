@@ -75,7 +75,6 @@ export function useSlotMachine() {
 	const spin = useCallback(() => {
 		if (credits < 10 || spinning) return;
 
-		// Deduct credits
 		setCredits((prev) => prev - 10);
 		setSpinning(true);
 		setWin(0);
