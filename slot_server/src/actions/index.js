@@ -36,9 +36,21 @@ const create_wallet = async (ctx) => {
 	}
 };
 
-const import_wallet = async () => {};
+const deposit = async (ctx) => {
+	ctx.editMessageText(`Deposit address`);
+};
+
+const getLuck = async (ctx) => {
+	ctx.editMessageText("This is the GET LUCK!!!! ");
+};
+
+const withdraw = async (ctx) => {
+	ctx.editMessageText("You want to WITHDRAW right!!!!!");
+};
 
 module.exports = {
 	create_wallet,
-	import_wallet,
+	deposit,
+	getLuck,
+	withdraw,
 };

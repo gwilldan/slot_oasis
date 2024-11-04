@@ -1,6 +1,7 @@
 require("dotenv").config();
-const { ethers, JsonRpcProvider, Wallet } = require("ethers");
-const provider = new JsonRpcProvider(process.env.RPC_URL);
+const { ethers, JsonRpcProvider, Wallet, formatEther } = require("ethers");
+const { RPC_URL } = require("../../constants");
+const provider = new JsonRpcProvider(RPC_URL);
 
 const createNewWallet = async () => {
 	try {
@@ -12,6 +13,21 @@ const createNewWallet = async () => {
 	}
 };
 
+const getNativeBal = async (address) => {
+	try {
+		const bal = await provider.getBalance(address);
+		const formattedBal = !bal
+			? 0
+			: Number(formatEther(bal)).toFixed(4) > 0.001
+			? Number(formatEther(bal)).toFixed(4)
+			: "< 0.001";
+		return formattedBal;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
 module.exports = {
 	createNewWallet,
+	getNativeBal,
 };

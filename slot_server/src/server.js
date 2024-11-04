@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const walletCommand = require("./commands/walletCommand");
 
 // action imports
-const { create_wallet } = require("./actions");
+const { create_wallet, deposit, withdraw, getLuck } = require("./actions");
 
 // web3 utils
 const {} = require("./utils/web3Utils");
@@ -23,19 +23,23 @@ const importScene = require("./scenes/importScene");
 mongoose.connect(process.env.DB_URI);
 
 bot.start(isNewUser, async (ctx) => {
-	ctx.reply(`Welcome to Slot Oasis, ${ctx.from.first_name}`);
-	await ctx.reply(
-		" 🔔 To play, you need to create a wallet, would you like to create a new wallet or import an old wallet?"
-	);
-	await ctx.reply(
-		"Wallet Options:",
-		Markup.inlineKeyboard([
-			[
-				Markup.button.callback("\u2003+ CREATE WALLET \u2003", "create"),
-				Markup.button.callback("\u2003♲ IMPORT WALLET \u2003", "import"),
-			],
-		])
-	);
+	const messages = [
+		ctx.reply(`Welcome to Slot Oasis, ${ctx.from.first_name}`),
+		ctx.reply(
+			" 🔔 To play, you need to create a wallet, would you like to create a new wallet or import an old wallet?"
+		),
+		ctx.reply(
+			"Wallet Options:",
+			Markup.inlineKeyboard([
+				[
+					Markup.button.callback("\u2003+ CREATE WALLET \u2003", "create"),
+					Markup.button.callback("\u2003♲ IMPORT WALLET \u2003", "import"),
+				],
+			])
+		),
+	];
+
+	await Promise.all(messages);
 });
 
 const stage = new Scenes.Stage([importScene]);
@@ -44,16 +48,20 @@ bot.use(stage.middleware());
 
 bot.command("wallet", isNewUserWallet, walletCommand);
 
+//  ---------- actions
 bot.action("import", (ctx) => ctx.scene.enter("import_scene"));
 bot.action("create", create_wallet);
-
 bot.action("cancel", (ctx) => {
 	ctx.editMessageText(
 		"Cancelled! Click on Menu or /start for our menu options."
 	);
 	ctx.scene.leave();
 });
+bot.action("deposit", deposit);
+bot.action("withdraw", withdraw);
+bot.action("getLuck", getLuck);
 
+// --------- events
 bot.on("text", async (ctx) => {
 	console.log(ctx.message.text);
 });
@@ -68,6 +76,6 @@ mongoose.connection.on("connected", (err) => {
 	});
 });
 
-// Enable graceful stop
-process.once("SIGINT", () => bot.stop("SIGINT"));
-process.once("SIGTERM", () => bot.stop("SIGTERM"));
+// // Enable graceful stop
+// process.once("SIGINT", () => bot.stop("SIGINT"));
+// process.once("SIGTERM", () => bot.stop("SIGTERM"));
